@@ -5,8 +5,8 @@
 # github: https://github.com/ramonfontes/mn-wifi-book-en
 
 from mininet.node import Controller
-from mininet.log import setLogLevel, info
-from mn_wifi.replaying import replayingMobility
+from mininet.log import RetLogLevel, info
+from mn_wifi.replaying import ReplayingMobility
 from mn_wifi.node import OVSAP
 from mn_wifi.cli import CLI
 from mn_wifi.net import Mininet_wifi
@@ -55,7 +55,7 @@ def topology():
     c1.start()
     ap1.start([c1])
 
-    replayingMobility(net)
+    ReplayingMobility(net)
 
     info("*** Running CLI\n")
     CLI(net)
@@ -69,13 +69,15 @@ def getTrace(sta, file_):
     raw_data = file_.readlines()
     file_.close()
 
-    sta.position = []
+    sta.p = []
+    pos = (-1000, 0, 0)
+    sta.position = pos
 
     for data in raw_data:
         line = data.split()
         x = line[0]  # First Column
         y = line[1]  # Second Column
-        sta.position.append('%s,%s,0' % (x, y))
+        sta.p.append('%s,%s,0' % (x, y))
 
 
 if __name__ == '__main__':
