@@ -5,7 +5,7 @@
 # github: https://github.com/ramonfontes/mn-wifi-book-en
 
 from mininet.node import Controller
-from mininet.log import RetLogLevel, info
+from mininet.log import setLogLevel, info
 from mn_wifi.replaying import ReplayingMobility
 from mn_wifi.node import OVSAP
 from mn_wifi.cli import CLI
@@ -17,8 +17,7 @@ import os
 
 def topology():
     "Create a network."
-    net = Mininet_wifi(controller=Controller, accessPoint=OVSAP,
-                       link=wmediumd, wmediumd_mode=interference)
+    net = Mininet_wifi(link=wmediumd, wmediumd_mode=interference)
 
     info("*** Creating nodes\n")
     sta1 = net.addStation('sta1', mac='00:00:00:00:00:02',
@@ -41,8 +40,8 @@ def topology():
     net.configureWifiNodes()
 
     info("*** Creating links\n")
-    net.addLink(sta3, cls=adhoc, ssid='adhocNet')
-    net.addLink(sta4, cls=adhoc, ssid='adhocNet')
+    net.addLink(sta3, cls=adhoc, intf='sta3-wlan0', ssid='adhocNet')
+    net.addLink(sta4, cls=adhoc, intf='sta4-wlan0', ssid='adhocNet')
 
     path = os.path.dirname(os.path.abspath(__file__))
     getTrace(sta1, '%s/replayingMobility/node1.dat' % path)
@@ -77,7 +76,8 @@ def getTrace(sta, file_):
         line = data.split()
         x = line[0]  # First Column
         y = line[1]  # Second Column
-        sta.p.append('%s,%s,0' % (x, y))
+        pos = x, y, 0
+        sta.p.append(pos)
 
 
 if __name__ == '__main__':
