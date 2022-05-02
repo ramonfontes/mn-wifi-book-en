@@ -25,14 +25,14 @@ def topology():
 
     info("*** Creating nodes\n")
     net.addStation('sta1', ip='10.0.0.1/8', position='20,0,0', inNamespace=False)
-    ap1 = net.addAccessPoint('ap1', ip='10.0.0.101/8', mac='02:00:00:00:00:01',
-                             ssid="handover", mode="g", channel="1", ieee80211r='yes',
-                             mobility_domain='a1b2', passwd='123456789a', encrypt='wpa2',
-                             position='10,30,0', inNamespace=True)
-    ap2 = net.addAccessPoint('ap2', ip='10.0.0.102/8', mac='02:00:00:00:00:02',
-                             ssid="handover", mode="g", channel="6", ieee80211r='yes',
-                             mobility_domain='a1b2', passwd='123456789a', encrypt='wpa2',
-                             position='100,30,0', inNamespace=True)
+    ap1 = net.addAccessPoint('ap1',  mac='02:00:00:00:00:01', ssid="handover", mode="g", 
+                             channel="1", ieee80211r='yes', mobility_domain='a1b2', 
+                             passwd='123456789a', encrypt='wpa2', position='10,30,0', 
+                             inNamespace=True)
+    ap2 = net.addAccessPoint('ap2', mac='02:00:00:00:00:02', ssid="handover", mode="g", 
+                             channel="6", ieee80211r='yes', mobility_domain='a1b2', 
+                             passwd='123456789a', encrypt='wpa2', position='100,30,0', 
+                             inNamespace=True)
     c1 = net.addController('c1', controller=RemoteController, port=6653)
 
     info("*** Configuring Propagation Model\n")
@@ -53,6 +53,8 @@ def topology():
     ap1.start([c1])
     ap2.start([c1])
 
+    ap1.cmd('ifconfig ap1-wlan1 10.0.0.101/8')
+    ap2.cmd('ifconfig ap2-wlan1 10.0.0.102/8')
     os.system('ip link set hwsim0 up')
 
     info("*** Running CLI\n")
