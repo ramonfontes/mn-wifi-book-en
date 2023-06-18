@@ -24,9 +24,9 @@ def topology():
     net.configureWifiNodes()
 
     r1.setMasterMode(intf='r1-wlan0', ssid='r1-ssid',
-                     channel='1', mode='n')
+                     channel='1', mode='n2')
     r2.setMasterMode(intf='r2-wlan0', ssid='r2-ssid',
-                     channel='1', mode='n')
+                     channel='1', mode='n2')
 
     info("*** Creating Links\n")
     net.addLink(r1, r2)
