@@ -49,6 +49,9 @@ def topology():
     getTrace(sta3, '%s/replayingMobility/node3.dat' % path)
     getTrace(sta4, '%s/replayingMobility/node4.dat' % path)
 
+    if '-r' in args:
+        net.plotGraph(max_x=200, max_y=200)
+
     info("*** Starting network\n")
     net.build()
     c1.start()
