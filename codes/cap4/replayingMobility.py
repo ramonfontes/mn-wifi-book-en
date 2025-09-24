@@ -3,6 +3,8 @@
 # autor: Ramon dos Reis Fontes
 # book: Wireless Network Emulation with Mininet-WiFi
 # github: https://github.com/ramonfontes/mn-wifi-book-en
+import os
+import sys
 
 from mininet.node import Controller
 from mininet.log import setLogLevel, info
@@ -12,10 +14,9 @@ from mn_wifi.cli import CLI
 from mn_wifi.net import Mininet_wifi
 from mn_wifi.link import wmediumd, adhoc
 from mn_wifi.wmediumdConnector import interference
-import os
 
 
-def topology():
+def topology(args):
     "Create a network."
     net = Mininet_wifi(link=wmediumd, wmediumd_mode=interference)
 
@@ -37,19 +38,20 @@ def topology():
     net.setPropagationModel(model="logDistance", exp=4.5)
 
     info("*** Configuring wifi nodes\n")
-    net.configureWifiNodes()
+    net.configureNodes()
 
     info("*** Creating links\n")
     net.addLink(sta3, cls=adhoc, intf='sta3-wlan0', ssid='adhocNet')
     net.addLink(sta4, cls=adhoc, intf='sta4-wlan0', ssid='adhocNet')
 
+    net.isReplaying = True
     path = os.path.dirname(os.path.abspath(__file__))
     getTrace(sta1, '%s/replayingMobility/node1.dat' % path)
     getTrace(sta2, '%s/replayingMobility/node2.dat' % path)
     getTrace(sta3, '%s/replayingMobility/node3.dat' % path)
     getTrace(sta4, '%s/replayingMobility/node4.dat' % path)
 
-    if '-r' in args:
+    if '-p' in args:
         net.plotGraph(max_x=200, max_y=200)
 
     info("*** Starting network\n")
@@ -57,6 +59,7 @@ def topology():
     c1.start()
     ap1.start([c1])
 
+    info("*** Replaying Mobility\n")
     ReplayingMobility(net)
 
     info("*** Running CLI\n")
@@ -79,10 +82,10 @@ def getTrace(sta, file_):
         line = data.split()
         x = line[0]  # First Column
         y = line[1]  # Second Column
-        pos = x, y, 0
+        pos = float(x), float(y), 0
         sta.p.append(pos)
 
 
 if __name__ == '__main__':
     setLogLevel('info')
-    topology()
+    topology(sys.argv)
